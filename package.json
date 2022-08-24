@@ -1,0 +1,32 @@
+{
+  "name": "entregable-clase-34",
+  "version": "1.0.0",
+  "description": "Consigna: Tomando con base el proyecto que vamos realizando, agregar un parámetro más en la ruta de comando que permita ejecutar al servidor en modo fork o cluster. Dicho parámetro será 'FORK' en el primer caso y 'CLUSTER' en el segundo, y de no pasarlo, el servidor iniciará en modo fork. ● Agregar en la vista info, el número de procesadores presentes en el servidor. ● Ejecutar el servidor (modos FORK y CLUSTER) con nodemon verificando el número de procesos tomados por node. ● Ejecutar el servidor (con los parámetros adecuados) utilizando Forever, verificando su correcta operación. Listar los procesos por Forever y por sistema operativo. ● Ejecutar el servidor (con los parámetros adecuados: modo FORK) utilizando PM2 en sus modos modo fork y cluster. Listar los procesos por PM2 y por sistema operativo. ● Tanto en Forever como en PM2 permitir el modo escucha, para que la actualización del código del servidor se vea reflejado inmediatamente en todos los procesos. ● Hacer pruebas de finalización de procesos fork y cluster en los casos que corresponda.",
+  "main": "Contenedor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "connect-mongo": "^4.6.0",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.6",
+    "express-session": "^1.17.3",
+    "knex": "^2.2.0",
+    "minimist": "^1.2.6",
+    "mongodb": "^4.9.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "passport": "^0.5.3",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.5.1",
+    "sqlite3": "^5.0.11"
+  }
+}

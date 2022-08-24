@@ -1,0 +1,158 @@
+/*
+Ejecutar el servidor (modos FORK y CLUSTER) con nodemon verificando el número de
+procesos tomados por node.
+*/
+
+>nodemon server.js -p 8080
+>tasklist /fi "imagename eq node.exe"
+
+Nombre de imagen               PID Nombre de sesión Núm. de ses Uso de memor
+========================= ======== ================ =========== ============
+node.exe                     11808 Console                    4    26.380 KB
+node.exe                      7644 Console                    4    45.744 KB
+
+>nodemon server.js -p 8080 -m CLUSTER
+>tasklist /fi "imagename eq node.exe"
+
+
+Nombre de imagen               PID Nombre de sesión Núm. de ses Uso de memor
+========================= ======== ================ =========== ============
+node.exe                      7004 Console                    4    26.672 KB
+node.exe                     11920 Console                    4    46.412 KB
+node.exe                     16096 Console                    4    46.236 KB
+node.exe                     10416 Console                    4    46.168 KB
+node.exe                     10108 Console                    4    45.772 KB
+node.exe                     11216 Console                    4    46.212 KB
+node.exe                     11824 Console                    4    46.264 KB
+node.exe                      3428 Console                    4    47.088 KB
+node.exe                     15704 Console                    4    45.904 KB
+node.exe                     11652 Console                    4    46.148 KB
+
+/*
+Ejecutar el servidor (con los parámetros adecuados) utilizando Forever, verificando su
+correcta operación. Listar los procesos por Forever y por sistema operativo
+*/
+
+>forever server.js -p 8080
+
+//-----------------------------OUTPUT------------------------------------------------------------------------------
+warn:    --minUptime not set. Defaulting to: 1000ms
+warn:    --spinSleepTime not set. Your script will exit if it does not stay up for at least 1000ms
+(node:13460) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13460) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+//-----------------------------------------------------------------------------------------------------------------
+
+>forever list
+
+//-----------------------------OUTPUT------------------------------------------------------------------------------
+(node:16076) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16076) Warning: Accessing non-existent property 'padLevels' of module exports inside circular dependency
+info:    Forever processes running
+data:        uid  command                            script
+                           forever pid   id logfile                          uptime
+data:    [0] MKis "C:\Program Files\nodejs\node.exe" 
+D:\Admin\Escritorio\Diplomatura desarrollo web\Coder House\Entregable\Entregable-clase-30\
+server.js -p 8080 13460   15612    C:\Users\Admin\.forever\MKis.log 0:0:0:7.609 
+//-----------------------------------------------------------------------------------------------------------------
+
+>tasklist /fi "imagename eq node.exe"
+
+//-----------------------------OUTPUT------------------------------------------------------------------------------
+Nombre de imagen               PID Nombre de sesión Núm. de ses Uso de memor
+========================= ======== ================ =========== ============
+node.exe                     13460 Console                    4    32.488 KB
+node.exe                     15612 Console                    4    45.984 KB
+//-----------------------------------------------------------------------------------------------------------------
+
+/*
+Ejecutar el servidor (con los parámetros adecuados: modo FORK) utilizando PM2 en sus
+modos modo fork y cluster. Listar los procesos por PM2 y por sistema operativo
+*/
+/*
+Tanto en Forever como en PM2 permitir el modo escucha, para que la actualización del
+código del servidor se vea reflejado inmediatamente en todos los procesos
+*/
+
+>pm2 start server.js --name="Server fork" --watch -- 8081
+
+[PM2] Starting D:\Admin\Escritorio\Diplomatura desarrollo web\Coder House\Entregable\Entregable-clase-30\server.js in fork_mode (1 instance)
+[PM2] Done.
+┌─────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0   │ Server fork    │ default     │ 1.0.0   │ fork    │ 7804     │ 0s     │ 0    │ online    │ 0%       │ 29.2mb   │ Admin    │ enabled │
+└─────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+>pm2 start server.js --name="Server cluster" -i max --watch - 8082
+
+[PM2] Starting D:\Admin\Escritorio\Diplomatura desarrollo web\Coder House\Entregable\Entregable-clase-30\server.js in cluster_mode (0 instance)
+[PM2] Done.
+┌─────┬───────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name              │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 16280    │ 1s     │ 0    │ online    │ 0%       │ 60.9mb   │ Admin    │ enabled │
+│ 2   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 11672    │ 1s     │ 0    │ online    │ 0%       │ 60.3mb   │ Admin    │ enabled │
+│ 3   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 15672    │ 1s     │ 0    │ online    │ 0%       │ 60.9mb   │ Admin    │ enabled │
+│ 4   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 6752     │ 1s     │ 0    │ online    │ 0%       │ 53.9mb   │ Admin    │ enabled │
+│ 5   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 13916    │ 0s     │ 0    │ online    │ 0%       │ 45.1mb   │ Admin    │ enabled │
+│ 6   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 10548    │ 0s     │ 0    │ online    │ 0%       │ 43.2mb   │ Admin    │ enabled │
+│ 7   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 11220    │ 0s     │ 0    │ online    │ 0%       │ 40.9mb   │ Admin    │ enabled │
+│ 8   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 7124     │ 0s     │ 0    │ online    │ 0%       │ 38.1mb   │ Admin    │ enabled │
+│ 0   │ Server fork       │ default     │ 1.0.0   │ fork    │ 7804     │ 65s    │ 0    │ online    │ 0%       │ 49.0mb   │ Admin    │ enabled │
+└─────┴───────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+>pm2 ls 
+
+┌─────┬───────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name              │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 16280    │ 98s    │ 0    │ online    │ 0%       │ 49.5mb   │ Admin    │ enabled │
+│ 2   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 11672    │ 98s    │ 0    │ online    │ 0%       │ 49.3mb   │ Admin    │ enabled │
+│ 3   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 15672    │ 98s    │ 0    │ online    │ 0%       │ 49.6mb   │ Admin    │ enabled │
+│ 4   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 6752     │ 98s    │ 0    │ online    │ 0%       │ 49.2mb   │ Admin    │ enabled │
+│ 5   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 13916    │ 98s    │ 0    │ online    │ 0%       │ 50.1mb   │ Admin    │ enabled │
+│ 6   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 10548    │ 98s    │ 0    │ online    │ 0%       │ 49.2mb   │ Admin    │ enabled │
+│ 7   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 11220    │ 98s    │ 0    │ online    │ 0%       │ 49.2mb   │ Admin    │ enabled │
+│ 8   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 7124     │ 98s    │ 0    │ online    │ 0%       │ 49.0mb   │ Admin    │ enabled │
+│ 0   │ Server fork       │ default     │ 1.0.0   │ fork    │ 7804     │ 2m     │ 0    │ online    │ 0%       │ 49.7mb   │ Admin    │ enabled │
+└─────┴───────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+>tasklist /fi "imagename eq node.exe"
+
+Nombre de imagen               PID Nombre de sesión Núm. de ses Uso de memor
+========================= ======== ================ =========== ============
+node.exe                     15852 Console                    4    34.784 KB
+node.exe                      7804 Console                    4    49.996 KB
+node.exe                     16280 Console                    4    51.136 KB
+node.exe                     11672 Console                    4    50.108 KB
+node.exe                     15672 Console                    4    51.272 KB
+node.exe                      6752 Console                    4    50.864 KB
+node.exe                     13916 Console                    4    50.808 KB
+node.exe                     10548 Console                    4    50.892 KB
+node.exe                     11220 Console                    4    50.896 KB
+node.exe                      7124 Console                    4    50.700 KB
+
+
+/*
+Hacer pruebas de finalización de procesos fork y cluster en los casos que corresponda
+*/
+
+>taskkill /pid 11220 /f
+>taskkill /pid 7804 /f
+>pm2 ls
+
+┌─────┬───────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id  │ name              │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├─────┼───────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 16280    │ 7m     │ 0    │ online    │ 0%       │ 49.8mb   │ Admin    │ disabled │
+│ 2   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 11672    │ 7m     │ 0    │ online    │ 0%       │ 48.7mb   │ Admin    │ disabled │
+│ 3   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 15672    │ 7m     │ 0    │ online    │ 0%       │ 50.1mb   │ Admin    │ disabled │
+│ 4   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 6752     │ 7m     │ 0    │ online    │ 0%       │ 50.1mb   │ Admin    │ disabled │
+│ 5   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 13916    │ 7m     │ 0    │ online    │ 0%       │ 49.6mb   │ Admin    │ disabled │
+│ 6   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 10548    │ 7m     │ 0    │ online    │ 0%       │ 49.1mb   │ Admin    │ disabled │
+│ 7   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 7052     │ 108s   │ 1    │ online    │ 0%       │ 49.2mb   │ Admin    │ disabled │
+│ 8   │ Server cluster    │ default     │ 1.0.0   │ cluster │ 7124     │ 7m     │ 0    │ online    │ 0%       │ 49.2mb   │ Admin    │ disabled │
+│ 0   │ Server fork       │ default     │ 1.0.0   │ fork    │ 15976    │ 8s     │ 1    │ online    │ 0%       │ 72.9mb   │ Admin    │ disabled │
+└─────┴───────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
